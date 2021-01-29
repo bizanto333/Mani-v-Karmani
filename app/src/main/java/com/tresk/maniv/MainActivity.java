@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences mSettings;
     public static final String APP_PREFERENCES = "myurl";
     public static final String APP_PREFERENCES_URL = "url";
-    String urGogo = "https://5mincredit.com.ua";
+    String urGogoDef = "https://go.5mincredit.com.ua/WY7SbYg2";
+    String urGogo = "";
     String deepPartone = "";
     String namingSl = "";
     String afStatus = "";
@@ -120,8 +121,12 @@ public class MainActivity extends AppCompatActivity {
         mSettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         if (mSettings.contains(APP_PREFERENCES_URL)) {
             urGogo = mSettings.getString(APP_PREFERENCES_URL, "");
-            Log.e("mylog:URL сохранённый", urGogo);
+            Log.e("mylog:URLсохран", "urGogo=" + urGogo+"---APP_PREFERENCES_URL="+APP_PREFERENCES_URL);
+        } else {
+            urGogo = urGogoDef;
+            Log.e("mylog:URLсохранELSE", "urGogo=" + urGogo+"---APP_PREFERENCES_URL="+APP_PREFERENCES_URL);
         }
+
         // для ФБ диплинки
         Intent intent = getIntent();
         Uri data = intent.getData();
@@ -164,10 +169,53 @@ public class MainActivity extends AppCompatActivity {
             );
 
         } else {
-
+            intent = new Intent(this, noinet.class);
+            startActivity(intent);
         }
     }
     public void Vnutr () throws InterruptedException {
+        int timer_count = 0;
+        while (timer_count < 10 && afStatus.isEmpty()) {
+            Thread.sleep(1000);
+            timer_count++;
+            Log.e("mylog_naming:", "ПАУЗА:"+timer_count+ "--namingComp=" + namingSl+"--afStatus="+ afStatus);
+        }
+        Log.e("mylog_naming:", "START2 операций с дип и нейминг namingComp=" + namingSl);
+        if (!deepPartone.isEmpty()) {
+            if (urGogo.contains("?") != true ) {
+                urGogo = urGogo.concat(deepPartone);
+                Log.e("mylog_deep:", "urGogo:"+urGogo);
+            }
+        } else {
+            if (urGogo.contains("?") != true) {
+                if (!namingSl.isEmpty() && !namingSl.equals("None")) {
+                    Log.e("mylog_naming:", "eeeeee1111");
+                    String[] nameParam = {"namegame", "store", "key", "id", "bayerid"};
+                    try {
+                        String[] nParts = namingSl.split("_");
+
+                        Log.e("mylog_naming:", "eeeeee" + nParts[0] + " & " + nParts[1]);
+                        String namingPart = "";
+
+                        for (int i = 0; i < nameParam.length; i++) {
+                            if (i == 0) {
+                                namingPart = namingPart.concat("?"+nameParam[i] + "=" + nParts[i]);
+                            } else {
+                                // namingPart = namingPart.concat("&");
+
+                                namingPart = namingPart.concat("&"+nameParam[i] + "=" + nParts[i]);
+                            }
+                            Log.e("mylog_naming_FOR:", "namingPart= " + namingPart);
+                        }
+
+                        urGogo = urGogo.concat(namingPart);
+                        Log.e("mylog_naming:", "urlGo:" + urGogo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
         count = 1;
         view = (WebView) findViewById(R.id.tersk);
 
