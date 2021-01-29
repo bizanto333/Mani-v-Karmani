@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "561025891381",
+    "project_id": "mani-v-karmani",
+    "storage_bucket": "mani-v-karmani.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561025891381:android:e5331e60a9e78e9b2ec57c",
+        "android_client_info": {
+          "package_name": "com.tresk.maniv"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "561025891381-nju4ad84bsikqiplksd3sp801aj6i24d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyUWkEGDWH5q9pYuQrFGu8rcKiPsbfP88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "561025891381-nju4ad84bsikqiplksd3sp801aj6i24d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
