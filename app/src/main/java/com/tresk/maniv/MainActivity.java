@@ -23,6 +23,11 @@ import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.AppsFlyerConversionListener;
 import java.util.Map;
 
+import com.facebook.FacebookSdk;
+import com.facebook.applinks.AppLinkData;
+
+import com.onesignal.OneSignal;
+
 public class MainActivity extends AppCompatActivity {
 
     Intent intent;
@@ -42,10 +47,15 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     // end.
     private static final String AF_DEV_KEY = "qLBVL3yAsrHaY8PgyhfLBW";
+    private static final String ONESIGNAL_APP_ID = "d2eddeaa-e298-472b-8d9f-7129298da1b0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        OneSignal.setLogLevel(OneSignal.LOG_LEVEL.VERBOSE, OneSignal.LOG_LEVEL.NONE);
+        // OneSignal Initialization
+        OneSignal.initWithContext(this);
+        OneSignal.setAppId(ONESIGNAL_APP_ID);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
@@ -57,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 for (String attrName : conversionData.keySet()) {
 
                     if (c.equals(attrName)) {
-                        namingComp = (String) conversionData.get(attrName);
+                        namingSl = (String) conversionData.get(attrName);
 
-                        Log.e("mylog:appflyer_IFFF_one", "nameC ="+ namingComp);
+                        Log.e("mylog:appflyer_IFFF_one", "nameC ="+ namingSl);
                     }
                     if (as.equals(attrName)) {
                         afStatus = (String) conversionData.get(attrName);
@@ -86,10 +96,10 @@ public class MainActivity extends AppCompatActivity {
                         linkA = attributionData.get(attrName);
                         Log.d("mylog:appflyer000", "attribute: " + attrName + " = " + linkA+ " SIze"+ attributionData.size());
                         String[] dParts = linkA.split("\\?");
-                        deepPart ="?"+ dParts[1];
-                        deepPart =  deepPart.replace("{UID}", appsFlyerId);
+                        deepPartone ="?"+ dParts[1];
+                       // deepPartone =  deepPart.replace("{UID}", appsFlyerId);
 
-                        Log.d("mylog:appflyer000", "deeplink part=" + deepPart);
+                        Log.d("mylog:appflyer000", "deeplink part=" + deepPartone);
                     }
                     Log.d("mylog:appflyer222", "attribute: " + attrName + " = " + attributionData.get(attrName));
 
@@ -125,12 +135,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (isOnlineNet(this)) {
-
-            try {
-                Vnutr();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            FacebookSdk.setAutoInitEnabled(true);
+            FacebookSdk.fullyInitialize();
+            AppLinkData.fetchDeferredAppLinkData(this,
+                    new AppLinkData.CompletionHandler() {
+                        @Override
+                        public void onDeferredAppLinkDataFetched(AppLinkData appLinkData) {
+                            if (appLinkData != null) {
+                                final String facelink = appLinkData.getTargetUri().getQuery(); //берем диплинк из фейсбук
+                                Log.i("DEBUG_FACEBO_SDK_mylog", "DeepLink facelink:" + facelink);
+                                urlhost = "?" + facelink;
+                                Log.i("DEBUG_FACEBO_SDK_mylog", "DeepLink urlhost:" + urlhost);
+                                try {
+                                    Vnutr();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Log.i("DEBUG_FACEBO_SDK_mylog", "AppLinkData is Null");
+                                try {
+                                    Vnutr();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+            );
 
         } else {
 
