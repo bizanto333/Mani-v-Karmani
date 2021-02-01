@@ -130,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         // для ФБ диплинки
         Intent intent = getIntent();
         Uri data = intent.getData();
-
         try {
             urlhost = data.getQuery();
             urlhost = "?" + urlhost;
@@ -181,23 +180,22 @@ public class MainActivity extends AppCompatActivity {
             Log.e("mylog_naming:", "ПАУЗА:"+timer_count+ "--namingComp=" + namingSl+"--afStatus="+ afStatus);
         }
         Log.e("mylog_naming:", "START2 операций с дип и нейминг namingComp=" + namingSl);
-        if (!deepPartone.isEmpty()) {
-            if (urGogo.contains("?") != true ) {
+
+        if (urGogo.equals(urGogoDef) == true ) {
+            if (!deepPartone.isEmpty()) {
                 urGogo = urGogo.concat(deepPartone);
                 Log.e("mylog_deep:", "urGogo:"+urGogo);
-            }
-        } else {
-            if (urGogo.contains("?") != true) {
+            } else {
                 if (!namingSl.isEmpty() && !namingSl.equals("None")) {
                     Log.e("mylog_naming:", "eeeeee1111");
-                    String[] nameParam = {"namegame", "store", "key", "id", "bayerid"};
+                    String[] nameParam = {"utm_creative","utm_campaign","id","ad_id","adset_name"};
                     try {
                         String[] nParts = namingSl.split("_");
 
-                        Log.e("mylog_naming:", "eeeeee" + nParts[0] + " & " + nParts[1]);
+                        Log.e("mylog_naming:", "eeeeee" + nParts[0] + " & " + nParts[0]);
                         String namingPart = "";
 
-                        for (int i = 0; i < nameParam.length; i++) {
+                        for (int i = 0; i < nParts.length; i++) {
                             if (i == 0) {
                                 namingPart = namingPart.concat("?"+nameParam[i] + "=" + nParts[i]);
                             } else {
@@ -207,7 +205,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Log.e("mylog_naming_FOR:", "namingPart= " + namingPart);
                         }
-
                         urGogo = urGogo.concat(namingPart);
                         Log.e("mylog_naming:", "urlGo:" + urGogo);
                     } catch (Exception e) {
